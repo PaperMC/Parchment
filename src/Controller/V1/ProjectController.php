@@ -2,11 +2,9 @@
 
 namespace App\Controller\V1;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\Finder\Finder;
 
-class ProjectController extends AbstractController {
+class ProjectController extends AbstractV1Controller {
     public function index($project) {
         $versions = $this->getVersions($project);
         return $this->json([
@@ -16,12 +14,16 @@ class ProjectController extends AbstractController {
     }
 
     private function getVersions($project) {
-        $cacheDir = $this->getParameter('parchment.cache');
-        $cache = new FilesystemCache('parchment', 0, $cacheDir);
+        $cache = $this->getCache();
 
-        $versions = $cache->get($this->makeCacheKey($project));
+        $versions = $cache->get(static::makeVersionCacheKey($project));
 
         if ($versions === null) {
+            $dir = $this->getParameter('parchment.downloads') . '/' . $project . '/';
+            if(!file_exists($dir)) {
+                throw $this->createNotFoundException();
+            }
+
             $finder = new Finder();
             $finder->directories()->in($this->getParameter('parchment.downloads') . '/' . $project . '/');
 
@@ -32,13 +34,9 @@ class ProjectController extends AbstractController {
 
             rsort($versions, SORT_NATURAL);
 
-            $cache->set($this->makeCacheKey($project), $versions);
+            $cache->set(static::makeVersionCacheKey($project), $versions);
         }
 
         return $versions;
-    }
-
-    private function makeCacheKey($project) {
-        return $project . '.versions';
     }
 }

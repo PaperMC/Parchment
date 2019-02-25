@@ -2,12 +2,16 @@
 
 namespace App\Controller\V1;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\Finder\Finder;
 
-class VersionController extends AbstractController {
+class VersionController extends AbstractV1Controller {
     public function index($project, $version) {
+        $cache = $this->getCache();
+        $versions = $cache->get(static::makeVersionCacheKey($project));
+        if(!in_array($version, $versions)) {
+            throw $this->createNotFoundException();
+        }
+
         $builds = $this->getBuilds($project, $version);
         return $this->json([
             'project' => $project,
@@ -17,10 +21,9 @@ class VersionController extends AbstractController {
     }
 
     private function getBuilds($project, $version) {
-        $cacheDir = $this->getParameter('parchment.cache');
-        $cache = new FilesystemCache('parchment', 0, $cacheDir);
+        $cache = $this->getCache();
 
-        $builds = $cache->get($this->makeCacheKey($project, $version));
+        $builds = $cache->get(static::makeBuildCacheKey($project, $version));
 
         if ($builds === null) {
             $finder = new Finder();
@@ -33,16 +36,12 @@ class VersionController extends AbstractController {
 
             rsort($builds, SORT_NATURAL);
 
-            $cache->set($this->makeCacheKey($project, $version), $builds);
+            $cache->set(static::makeBuildCacheKey($project, $version), $builds);
         }
 
         return [
             'latest' => $builds[0],
             'all' => $builds
         ];
-    }
-
-    private function makeCacheKey($project, $version) {
-        return $project . '.builds.' . $version;
     }
 }

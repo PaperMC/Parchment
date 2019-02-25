@@ -1,17 +1,23 @@
 v1_project:
   path: '/v1/{project}'
   controller: 'App\Controller\V1\ProjectController::index'
+  defaults:
+    _format: 'json'
   requirements:
     project: '[a-z]+'
 v1_project_version:
   path: '/v1/{project}/{version}'
   controller: 'App\Controller\V1\VersionController::index'
+  defaults:
+    _format: 'json'
   requirements:
     project: '[a-z]+'
     version: '[0-9.]+'
 v1_project_version_build:
   path: '/v1/{project}/{version}/{build}'
   controller: 'App\Controller\V1\BuildController::index'
+  defaults:
+    _format: 'json'
   requirements:
     project: '[a-z]+'
     version: '[0-9.]+'
@@ -19,6 +25,8 @@ v1_project_version_build:
 v1_project_version_build_download:
   path: '/v1/{project}/{version}/{build}/download'
   controller: 'App\Controller\V1\BuildController::download'
+  defaults:
+    _format: 'json'
   requirements:
     project: '[a-z]+'
     version: '[0-9.]+'
