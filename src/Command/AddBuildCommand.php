@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\V1\AbstractCacheTrait;
 use App\V1\BuildCacheTrait;
 use App\V1\VersionCacheTrait;
 use Symfony\Component\Console\Command\Command;
@@ -11,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AddBuildCommand extends Command {
+    use AbstractCacheTrait;
     use BuildCacheTrait;
     use VersionCacheTrait;
 
