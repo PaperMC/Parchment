@@ -12,7 +12,7 @@ v1_project_version:
     _format: 'json'
   requirements:
     project: '[a-z]+'
-    version: '[0-9.]+'
+    version: '[0-9pre.-]+'
 v1_project_version_build:
   path: '/v1/{project}/{version}/{build}'
   controller: 'App\Controller\V1\BuildController::build'
@@ -20,7 +20,7 @@ v1_project_version_build:
     _format: 'json'
   requirements:
     project: '[a-z]+'
-    version: '[0-9.]+'
+    version: '[0-9pre.-]+'
     build: '\d+'
 v1_project_version_latest:
   path: '/v1/{project}/{version}/latest'
@@ -29,7 +29,7 @@ v1_project_version_latest:
     _format: 'json'
   requirements:
     project: '[a-z]+'
-    version: '[0-9.]+'
+    version: '[0-9pre.-]+'
 v1_project_version_build_download:
   path: '/v1/{project}/{version}/{build}/download'
   controller: 'App\Controller\V1\BuildController::download'
@@ -37,7 +37,7 @@ v1_project_version_build_download:
     _format: 'json'
   requirements:
     project: '[a-z]+'
-    version: '[0-9.]+'
+    version: '[0-9pre.-]+'
     build: '\d+'
 v1_project_version_latest_download:
   path: '/v1/{project}/{version}/latest/download'
@@ -46,4 +46,4 @@ v1_project_version_latest_download:
     _format: 'json'
   requirements:
     project: '[a-z]+'
-    version: '[0-9.]+'
+    version: '[0-9pre.-]+'
