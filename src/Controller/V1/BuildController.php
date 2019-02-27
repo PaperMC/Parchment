@@ -3,10 +3,12 @@
 namespace App\Controller\V1;
 
 use App\Access\ParameterBagAccessTrait;
+use App\V1\AbstractCacheTrait;
 use App\V1\BuildCacheTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BuildController extends AbstractController {
+    use AbstractCacheTrait;
     use BuildCacheTrait;
     use ParameterBagAccessTrait;
     use V1ControllerTrait;

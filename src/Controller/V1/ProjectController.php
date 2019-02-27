@@ -3,10 +3,12 @@
 namespace App\Controller\V1;
 
 use App\Access\ParameterBagAccessTrait;
+use App\V1\AbstractCacheTrait;
 use App\V1\VersionCacheTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProjectController extends AbstractController {
+    use AbstractCacheTrait;
     use ParameterBagAccessTrait;
     use VersionCacheTrait;
 

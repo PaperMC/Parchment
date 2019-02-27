@@ -7,8 +7,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Finder\Finder;
 
 trait VersionCacheTrait {
-    use AbstractCacheTrait;
-
     protected function hasVersion(ParameterBagInterface $bag, string $project, string $version) {
         $versions = $this->getVersions($bag, $project);
         return in_array($version, $versions);

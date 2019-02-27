@@ -7,8 +7,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Finder\Finder;
 
 trait BuildCacheTrait {
-    use AbstractCacheTrait;
-
     protected function hasBuild(ParameterBagInterface $bag, string $project, string $version, string $build) {
         $builds = $this->getBuilds($bag, $project, $version);
         return in_array($build, $builds);
