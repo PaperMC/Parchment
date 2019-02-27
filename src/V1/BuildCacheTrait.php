@@ -2,33 +2,44 @@
 
 namespace App\V1;
 
-use Psr\SimpleCache\CacheInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Finder\Finder;
 
 trait BuildCacheTrait {
+    /**
+     * @param ParameterBagInterface $bag
+     * @param string $project
+     * @param string $version
+     * @param string $build
+     * @return bool
+     */
     protected function hasBuild(ParameterBagInterface $bag, string $project, string $version, string $build) {
         $builds = $this->getBuilds($bag, $project, $version);
         return in_array($build, $builds);
     }
 
-    protected function addBuild(ParameterBagInterface $bag, CacheInterface $cache, string $project, string $version, string $build) {
+    protected function addBuild(ParameterBagInterface $bag, CacheItemPoolInterface $cache, string $project, string $version, string $build) {
         $builds = $this->getBuilds($bag, $project, $version);
         $builds[] = $build;
         rsort($builds, SORT_NATURAL);
-        $cache->set(static::makeBuildCacheKey($project, $version), $builds);
+        $item = $cache->getItem(static::makeBuildCacheKey($project, $version));
+        $item->set($builds);
+        $cache->save($item);
         return $builds;
     }
 
     protected function getBuilds(ParameterBagInterface $bag, string $project, string $version) {
         $cache = $this->getCache($bag);
+        $builds = $this->findAndCacheBuilds($bag, $cache, $project, $version);
+        return $builds;
+    }
 
-        $builds = $cache->get(static::makeBuildCacheKey($project, $version));
-        if ($builds === null) {
-            $builds = $this->findBuilds($bag, $project, $version);
-            $cache->set(static::makeBuildCacheKey($project, $version), $builds);
-        }
-
+    protected function findAndCacheBuilds(ParameterBagInterface $bag, CacheItemPoolInterface $cache, string $project, string $version) {
+        $builds = $this->findBuilds($bag, $project, $version);
+        $item = $cache->getItem(static::makeBuildCacheKey($project, $version));
+        $item->set($builds);
+        $cache->save($item);
         return $builds;
     }
 
