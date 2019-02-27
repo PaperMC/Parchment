@@ -50,6 +50,6 @@ class AddBuildCommand extends Command {
             return;
         }
 
-        $io->success('Build was successfully cleared.');
+        $io->success('Build was successfully added.');
     }
 }
