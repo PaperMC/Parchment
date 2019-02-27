@@ -2,19 +2,23 @@
 
 namespace App\Controller\V1;
 
+use App\Access\ParameterBagAccessTrait;
+use App\V1\BuildCacheTrait;
+use App\V1\VersionCacheTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class VersionController extends AbstractController {
+    use BuildCacheTrait;
+    use ParameterBagAccessTrait;
+    use VersionCacheTrait;
     use V1ControllerTrait;
 
     public function index($project, $version) {
-        $cache = $this->getCache();
-        $versions = $cache->get(static::makeVersionCacheKey($project));
-        if(!in_array($version, $versions)) {
+        if(!$this->hasVersion($this->getParameterBag(), $project, $version)) {
             throw $this->createNotFoundException();
         }
 
-        $builds = $this->getBuilds($project, $version);
+        $builds = $this->getBuilds($this->getParameterBag(), $project, $version);
         return $this->json([
             'project' => $project,
             'version' => $version,
