@@ -37,13 +37,13 @@ trait VersionCacheTrait {
     }
 
     protected function findVersions(ParameterBagInterface $bag, string $project) {
-        $dir = $this->getDownloadsPath($bag, $project);
-        if(!file_exists($dir)) {
+        $directory = $this->getDownloadsPath($bag, $project);
+        if(!file_exists($directory)) {
             return [];
         }
 
         $finder = new Finder();
-        $finder->directories()->in($dir);
+        $finder->directories()->in($directory);
 
         $versions = [];
         foreach ($finder as $file) {

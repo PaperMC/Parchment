@@ -37,15 +37,22 @@ trait BuildCacheTrait {
 
     protected function findAndCacheBuilds(ParameterBagInterface $bag, CacheItemPoolInterface $cache, string $project, string $version) {
         $builds = $this->findBuilds($bag, $project, $version);
-        $item = $cache->getItem(static::makeBuildCacheKey($project, $version));
-        $item->set($builds);
-        $cache->save($item);
+        if(!empty($builds)) {
+            $item = $cache->getItem(static::makeBuildCacheKey($project, $version));
+            $item->set($builds);
+            $cache->save($item);
+        }
         return $builds;
     }
 
     protected function findBuilds(ParameterBagInterface $bag, string $project, string $version) {
+        $directory = $this->getDownloadsPath($bag, $project , $version);
+        if(!file_exists($directory)) {
+            return [];
+        }
+
         $finder = new Finder();
-        $finder->files()->in($this->getDownloadsPath($bag, $project , $version));
+        $finder->files()->in($directory);
 
         $builds = [];
         foreach ($finder as $file) {
