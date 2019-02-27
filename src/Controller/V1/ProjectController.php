@@ -15,7 +15,7 @@ class ProjectController extends AbstractController {
     public function index($project) {
         $versions = $this->getVersions($this->getParameterBag(), $project);
         if($versions == null) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('Could not locate project');
         }
         return $this->json([
             'project' => $project,

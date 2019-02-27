@@ -17,7 +17,7 @@ class VersionController extends AbstractController {
 
     public function index($project, $version) {
         if(!$this->hasVersion($this->getParameterBag(), $project, $version)) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('Could not locate version');
         }
 
         $builds = $this->getBuilds($this->getParameterBag(), $project, $version);
