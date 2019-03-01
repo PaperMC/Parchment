@@ -20,7 +20,7 @@ class VersionController extends AbstractController {
             throw $this->createNotFoundException('Could not locate version');
         }
 
-        $builds = $this->getVersions($this->getParameterBag(), $project);
+        $builds = $this->getBuilds($this->getParameterBag(), $project, $version);
         return $this->json([
             'project' => $project,
             'version' => $version,
