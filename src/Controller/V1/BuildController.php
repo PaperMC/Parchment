@@ -30,7 +30,7 @@ class BuildController extends AbstractController {
             throw $this->createNotFoundException('Could not locate build');
         }
         $filePath = $this->getDownloadsPath($bag, $project, $version . '/' . $build . '.jar');
-        return $this->file($filePath, $project . '-' . $build . '.jar');
+        return $this->jarFile($filePath, $project . '-' . $build . '.jar');
     }
 
     public function latest($project, $version) {
@@ -50,5 +50,11 @@ class BuildController extends AbstractController {
         }
         $build = static::getLatestBuild($builds);
         return $this->download($project, $version, $build);
+    }
+
+    private function jarFile($file, $fileName) {
+        $response = $this->file($file, $fileName);
+        $response->headers->set('Content-Type', 'application/java-archive');
+        return $response;
     }
 }
