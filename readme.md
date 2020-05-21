@@ -30,5 +30,5 @@ $ php $PARCHMENT_ROOT_DIR/bin/console app:add-build $project_name $project_versi
 
 To build off our previous example, we'd execute
 ```
-$ php $PARCHMENT_ROOT_DIR/bin/console app:add-build paper 1.15.2 644
+$ php $PARCHMENT_ROOT_DIR/bin/console app:add-build paper 1.15.2 244
 ```
