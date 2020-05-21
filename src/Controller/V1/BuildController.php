@@ -17,11 +17,15 @@ class BuildController extends AbstractController {
         if(!$this->hasBuild($this->getParameterBag(), $project, $version, $build)) {
             throw $this->createNotFoundException('Could not locate build');
         }
-        return $this->json([
+
+        $response =  $this->json([
             'project' => $project,
             'version' => $version,
             'build' => $build
         ]);
+        $response->setPublic();
+        $response->setSharedMaxAge(604800); # 7 days
+        return $response;
     }
 
     public function download($project, $version, $build) {
@@ -39,7 +43,10 @@ class BuildController extends AbstractController {
             throw $this->createNotFoundException('Could not locate latest build');
         }
         $build = static::getLatestBuild($builds);
-        return $this->build($project, $version, $build);
+        $response = $this->build($project, $version, $build);
+        # Override max age response for latest
+        $response->setSharedMaxAge(120); # 2 minutes
+        return $response;
     }
 
     public function latestDownload($project, $version) {
@@ -49,12 +56,18 @@ class BuildController extends AbstractController {
             throw $this->createNotFoundException('Could not locate latest build');
         }
         $build = static::getLatestBuild($builds);
-        return $this->download($project, $version, $build);
+        $response = $this->download($project, $version, $build);
+        # Override max age response for latest
+        $response->setSharedMaxAge(120); # 2 minutes
+        return $response;
     }
 
     private function jarFile($file, $fileName) {
         $response = $this->file($file, $fileName);
         $response->headers->set('Content-Type', 'application/java-archive');
+        $response->setAutoLastModified();
+        $response->setPublic();
+        $response->setSharedMaxAge(604800); # 7 days
         return $response;
     }
 }

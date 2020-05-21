@@ -21,7 +21,7 @@ class VersionController extends AbstractController {
         }
 
         $builds = $this->getBuilds($this->getParameterBag(), $project, $version);
-        return $this->json([
+        $response =  $this->json([
             'project' => $project,
             'version' => $version,
             'builds' => [
@@ -29,5 +29,8 @@ class VersionController extends AbstractController {
                 'all' => $builds
             ]
         ]);
+        $response->setPublic();
+        $response->setSharedMaxAge(120); # 2 minutes
+        return $response;
     }
 }

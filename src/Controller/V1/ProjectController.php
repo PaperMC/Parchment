@@ -17,9 +17,13 @@ class ProjectController extends AbstractController {
         if($versions == null) {
             throw $this->createNotFoundException('Could not locate project');
         }
-        return $this->json([
+
+        $response = $this->json([
             'project' => $project,
             'versions' => $versions
         ]);
+        $response->setPublic();
+        $response->setSharedMaxAge(1800); # 30 minutes
+        return $response;
     }
 }
