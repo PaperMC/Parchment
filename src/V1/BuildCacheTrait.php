@@ -37,11 +37,12 @@ trait BuildCacheTrait {
 
     protected function getBuildHash(ParameterBagInterface $bag, string $project, string $version, string $build) {
         $cache = $this->getCache($bag);
-        $filePath = $this->getDownloadsPath($bag, $project, $version . '/' . $build . '.jar');
 
         $cacheKey = static::makeBuildCacheKey($project, $version) . ".$build.hash";
         $item = $cache->getItem($cacheKey);
+        
         if (!$item->isHit()) {
+            $filePath = $this->getDownloadsPath($bag, $project, $version . '/' . $build . '.jar');
             $item->set(hash_file('md5', $filePath));
             $cache->save($item);
         }
