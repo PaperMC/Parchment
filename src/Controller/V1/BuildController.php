@@ -18,10 +18,13 @@ class BuildController extends AbstractController {
             throw $this->createNotFoundException('Could not locate build');
         }
 
+        $hash = $this->getBuildHash($this->getParameterBag(), $project, $version, $build);
+
         $response =  $this->json([
             'project' => $project,
             'version' => $version,
-            'build' => $build
+            'build' => $build,
+            'hash' => $hash
         ]);
         $response->setPublic();
         $response->setSharedMaxAge(604800); # 7 days

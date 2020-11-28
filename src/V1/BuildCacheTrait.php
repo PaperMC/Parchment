@@ -35,6 +35,21 @@ trait BuildCacheTrait {
         return $builds;
     }
 
+    protected function getBuildHash(ParameterBagInterface $bag, string $project, string $version, string $build) {
+        $cache = $this->getCache($bag);
+
+        $cacheKey = static::makeBuildCacheKey($project, $version) . ".$build.hash";
+        $item = $cache->getItem($cacheKey);
+        
+        if (!$item->isHit()) {
+            $filePath = $this->getDownloadsPath($bag, $project, $version . '/' . $build . '.jar');
+            $item->set(hash_file('md5', $filePath));
+            $cache->save($item);
+        }
+
+        return $item->get();
+    }
+
     protected function findAndCacheBuilds(ParameterBagInterface $bag, CacheItemPoolInterface $cache, string $project, string $version) {
         $builds = $this->findBuilds($bag, $project, $version);
         if(!empty($builds)) {
